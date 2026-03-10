@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GID C.A. | Créditos y Asesoría</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,500&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: sans-serif; line-height: 1.6; margin: 0; padding: 0; color: #333; background-color: #f4f4f4; }
+        header { background: #002e5b; color: #fff; padding: 2.5rem 1rem; text-align: center; border-bottom: 4px solid #d4af37; }
+        .container { max-width: 500px; margin: auto; padding: 1.5rem; background: #fff; }
+        h1 { margin-bottom: 0.5rem; }
+        h2 { color: #002e5b; border-left: 4px solid #d4af37; padding-left: 10px; font-size: 1.2rem; }
+        
+        .destacado-emocional {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 1.4rem;
+            color: #d4af37;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            margin-top: 0;
+            display: block;
+        }
+
+        .details { margin: 1rem 0; border: 1px solid #ddd; border-radius: 5px; }
+        summary { padding: 1rem; font-weight: bold; cursor: pointer; background: #f9f9f9; outline: none; }
+        details[open] summary { border-bottom: 1px solid #ddd; background: #eef2f7; }
+        .content { padding: 1rem; font-size: 0.95rem; }
+
+        form { display: flex; flex-direction: column; gap: 10px; margin-top: 1rem; }
+        input, select, textarea { padding: 12px; border: 1px solid #ccc; border-radius: 5px; font-size: 1rem; }
+        
+        /* Color de texto descriptivo ajustado a gris neutro */
+        .texto-info { font-size: 0.9rem; color: #555555; }
+
+        .btn { background: #28a745; color: white; padding: 15px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; text-align: center; text-decoration: none; font-size: 1.1rem;}
+        .btn:hover { background: #218838; }
+
+        footer { text-align: center; padding: 2rem; font-size: 0.8rem; color: #888888; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>GID C.A.</h1>
+    <span class="destacado-emocional">7 años de Experiencia Financiera</span>
+</header>
+
+<div class="container">
+    
+    <section>
+        <h2>Información de Créditos</h2>
+        <details class="details">
+            <summary>¿Cómo funcionan nuestros créditos?</summary>
+            <div class="content">
+                <p>Nuestro proceso es simple: solicitas el monto, evaluamos tu capacidad en menos de 24 horas y, tras la aprobación, se realiza el desembolso seguro.</p>
+            </div>
+        </details>
+
+        <details class="details">
+            <summary>Tasas y Porcentajes</summary>
+            <div class="content">
+                <p>Manejamos tasas competitivas ajustadas al perfil de riesgo:</p>
+                <ul>
+                    <li><strong>Créditos Personales:</strong> Desde 5% mensual.</li>
+                    <li><strong>Financiamiento PYME:</strong> Tasas preferenciales según proyecto.</li>
+                    <li><strong>Transparencia total en el proceso.</strong></li>
+                </ul>
+            </div>
+        </details>
+    </section>
+
+    <section>
+        <h2>Solicitud de Asesoría</h2>
+        <p class="texto-info">Complete los datos y un asesor de GID C.A. le contactará de forma segura.</p>
+        
+        <form action="https://formspree.io/f/xojkeldp" method="POST">
+            <input type="text" name="nombre" placeholder="Nombre completo" required>
+            <input type="tel" name="telefono" placeholder="WhatsApp / Signal / Telegram" required>
+            
+            <select name="monto_solicitado" required>
+                <option value="" disabled selected>Monto aproximado del crédito</option>
+                <option value="500-2000">$500 - $2,000</option>
+                <option value="2000-5000">$2,000 - $5,000</option>
+                <option value="5000-10000">$5,000 - $10,000</option>
+                <option value="10000-20000">$10,000 - $20,000</option>
+                <option value="20000+">Más de $20,000</option>
+            </select>
+
+            <textarea name="mensaje" rows="4" placeholder="Cuéntenos brevemente su necesidad financiera..."></textarea>
+            
+            <button type="submit" class="btn">Enviar Solicitud Protegida</button>
+        </form>
+    </section>
+
+</div>
+
+<footer>
+    <p>&copy; 2026 GID C.A. | Seguridad y Confidencialidad</p>
+</footer>
+
+</body>
+</html>
