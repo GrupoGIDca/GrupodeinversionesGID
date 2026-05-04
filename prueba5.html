@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GID C.A. | Inteligencia Financiera</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --black:      #0a0a0a;
+            --dark:       #111111;
+            --card:       #161616;
+            --card2:      #1c1c1c;
+            --border:     #242424;
+            --green:      #00e676;
+            --green-dark: #00c853;
+            --green-glow: rgba(0,230,118,0.12);
+            --white:      #f0f0f0;
+            --muted:      #777;
+            --muted2:     #555;
+        }
+
+        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family:'DM Sans',sans-serif; background:var(--black); color:var(--white); overflow-x:hidden; }
+
+        /* ═══ NAV ═══ */
+        .nav {
+            position: fixed; top:0; left:0; right:0; z-index:999;
+            display: flex; justify-content:space-between; align-items:center;
+            padding: 1rem 1.5rem;
+            background: rgba(10,10,10,0);
+            transition: background 0.4s, border-color 0.4s, padding 0.3s;
+            border-bottom: 1px solid transparent;
+        }
+        .nav.scrolled {
+            background: rgba(10,10,10,0.92);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-color: var(--border);
+            padding: 0.7rem 1.5rem;
+        }
+        .nav-logo {
+            font-family:'DM Serif Display',serif;
+            font-size: 1.4rem;
+            color: var(--white);
+            letter-spacing: -0.02em;
+        }
+        .nav-logo span { color: var(--green); }
+        .nav-actions { display:flex; gap:0.5rem; }
+        .nav-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-family:'DM Sans',sans-serif;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+            letter-spacing: 0.02em;
+        }
+        .nav-btn-outline {
+            background: transparent;
+            color: var(--green);
+            border: 1px solid var(--border);
+        }
+        .nav-btn-outline:hover { border-color: var(--green); }
+        .nav-btn-solid {
+            background: var(--green);
+            color: var(--black);
+        }
+        .nav-btn-solid:hover { background: var(--green-dark); }
+
+        /* ═══ HERO ═══ */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 6rem 1.5rem 4rem;
+            overflow: hidden;
+        }
+        .hero-glow {
+            position: absolute;
+            width: 700px; height: 700px;
+            background: radial-gradient(circle, rgba(0,230,118,0.07) 0%, transparent 65%);
+            top: 50%; left: 50%;
+            transform: translate(-50%,-50%);
+            pointer-events: none;
+            animation: breathe 6s ease-in-out infinite;
+        }
+        @keyframes breathe {
+            0%,100% { transform: translate(-50%,-50%) scale(1); opacity:0.7; }
+            50%      { transform: translate(-50%,-50%) scale(1.15); opacity:1; }
+        }
+        .hero-grid {
+            position: absolute; inset:0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+            background-size: 64px 64px;
+            mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+            pointer-events: none;
+        }
+
+        .hero-eyebrow {
+            font-size: 0.7rem;
+            letter-spacing: 0.35em;
+            text-transform: uppercase;
+            color: var(--green);
+            margin-bottom: 1.5rem;
+            animation: fadeUp 0.6s 0.1s ease both;
+        }
+        .hero-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(4.5rem, 22vw, 10rem);
+            line-height: 0.92;
+            letter-spacing: -0.03em;
+            color: var(--white);
+            animation: fadeUp 0.7s 0.2s ease both;
+        }
+        .hero-title .dot {
+            display: inline-block;
+            width: clamp(14px,3vw,26px);
+            height: clamp(14px,3vw,26px);
+            background: var(--green);
+            border-radius: 50%;
+            margin-left: 2px;
+            vertical-align: super;
+            box-shadow: 0 0 24px var(--green), 0 0 48px rgba(0,230,118,0.25);
+            animation: pulse 3s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%,100% { box-shadow: 0 0 20px var(--green), 0 0 40px rgba(0,230,118,0.2); }
+            50%      { box-shadow: 0 0 35px var(--green), 0 0 70px rgba(0,230,118,0.4); }
+        }
+        .hero-sub {
+            margin-top: 1.5rem;
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            color: var(--muted);
+            max-width: 380px;
+            line-height: 1.6;
+            animation: fadeUp 0.7s 0.35s ease both;
+        }
+        .hero-sub strong { color: var(--white); font-weight: 500; }
+
+        .hero-cta {
+            display: flex; gap: 0.8rem; margin-top: 2.5rem; flex-wrap:wrap; justify-content:center;
+            animation: fadeUp 0.7s 0.5s ease both;
+        }
+        .cta-primary {
+            background: var(--green); color: var(--black);
+            padding: 0.9rem 2rem; border-radius: 8px;
+            font-weight: 700; font-size: 0.92rem;
+            text-decoration: none; letter-spacing: 0.02em;
+            transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+            box-shadow: 0 0 0 rgba(0,230,118,0);
+        }
+        .cta-primary:hover { background: var(--green-dark); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,230,118,0.3); }
+        .cta-secondary {
+            background: transparent; color: var(--white);
+            padding: 0.9rem 2rem; border-radius: 8px;
+            font-weight: 500; font-size: 0.92rem;
+            text-decoration: none; letter-spacing: 0.02em;
+            border: 1px solid var(--border);
+            transition: border-color 0.2s, color 0.2s;
+        }
+        .cta-secondary:hover { border-color: var(--muted); color: var(--white); }
+
+        .scroll-hint {
+            position: absolute; bottom: 2rem; left:50%; transform: translateX(-50%);
+            display: flex; flex-direction: column; align-items:center; gap:0.5rem;
+            color: var(--muted2); font-size: 0.65rem; letter-spacing: 0.25em;
+            text-transform: uppercase; white-space: nowrap;
+            animation: fadeUp 1s 1.2s ease both;
+        }
+        .scroll-line {
+            width: 1px; height: 36px;
+            background: linear-gradient(to bottom, var(--green), transparent);
+            animation: scrollAnim 2s ease-in-out infinite;
+        }
+        @keyframes scrollAnim { 0%,100%{opacity:0.3;transform:scaleY(1)} 50%{opacity:1;transform:scaleY(1.15)} }
+
+        /* ═══ STATS ═══ */
+        .stats-band {
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0;
+        }
+        .stat-item {
+            padding: 2rem 1rem;
+            text-align: center;
+            border-right: 1px solid var(--border);
+            position: relative;
+        }
+        .stat-item:last-child { border-right: none; }
+        .stat-num {
+            font-family: 'DM Serif Display', serif;
+            font-size: 2.2rem;
+            color: var(--green);
+            display: block;
+            line-height: 1;
+        }
+        .stat-suffix { font-size: 1.1rem; color: var(--muted); }
+        .stat-desc {
+            font-size: 0.7rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-top: 0.4rem;
+        }
+
+        /* ═══ MAIN CONTENT ═══ */
+        .main { max-width: 580px; margin: 0 auto; padding: 0 1.2rem 5rem; }
+        .section-label { font-size: 0.68rem; letter-spacing: 0.3em; text-transform:uppercase; color:var(--green); margin-bottom:0.5rem; }
+        .section-title { font-family:'DM Serif Display',serif; font-size:1.9rem; color:var(--white); margin-bottom:1.5rem; line-height:1.15; }
+
+        /* ═══ WHY US ═══ */
+        .why-grid { display:grid; grid-template-columns:1fr 1fr; gap:0.7rem; margin-bottom:2.5rem; }
+        .why-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.4rem;
+            transition: border-color 0.2s, transform 0.2s;
+        }
+        .why-card:hover { border-color: rgba(0,230,118,0.3); transform: translateY(-2px); }
+        .why-icon { font-size: 1.6rem; margin-bottom: 0.7rem; display:block; }
+        .why-title { font-size: 0.88rem; font-weight: 600; color: var(--white); margin-bottom: 0.3rem; }
+        .why-text { font-size: 0.78rem; color: var(--muted); line-height: 1.5; }
+
+        /* ═══ ACCORDION ═══ */
+        .accordion-group { margin-bottom: 2.5rem; }
+        details.acc { border:1px solid var(--border); border-radius:10px; overflow:hidden; margin-bottom:0.5rem; transition:border-color 0.2s; }
+        details.acc[open] { border-color:var(--green); }
+        details.acc summary { padding:1.1rem 1.2rem; font-weight:500; font-size:0.93rem; cursor:pointer; background:var(--card); list-style:none; display:flex; justify-content:space-between; align-items:center; user-select:none; }
+        details.acc summary::-webkit-details-marker { display:none; }
+        details.acc summary::after { content:'+'; font-size:1.3rem; color:var(--green); font-weight:300; transition:transform 0.25s; flex-shrink:0; }
+        details.acc[open] summary::after { transform:rotate(45deg); }
+        .acc-content { background:var(--dark); padding:1.2rem; font-size:0.88rem; color:#999; line-height:1.75; border-top:1px solid var(--border); }
+        .acc-content ul { padding-left:1.1rem; }
+        .acc-content li { margin-bottom:0.4rem; }
+        .acc-content strong { color:var(--white); }
+
+        /* ═══ RATES ═══ */
+        .rates-row { display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-bottom:2.5rem; }
+        .rate-card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:1.5rem; }
+        .rate-card.featured { border-color:var(--green); background:linear-gradient(145deg,#111 0%,#0b1e10 100%); }
+        .rate-badge { display:inline-block; font-size:0.62rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--green); background:var(--green-glow); border:1px solid rgba(0,230,118,0.2); border-radius:20px; padding:0.2rem 0.6rem; margin-bottom:0.8rem; }
+        .rate-type { font-size:0.7rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em; }
+        .rate-val { font-family:'DM Serif Display',serif; font-size:1.8rem; color:var(--green); margin:0.3rem 0; line-height:1; }
+        .rate-desc { font-size:0.76rem; color:var(--muted); margin-top:0.3rem; }
+
+        /* ═══ FORM ═══ */
+        .form-card { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:2rem 1.5rem; margin-bottom:2.5rem; }
+        .form-section-title { font-size:0.78rem; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em; margin:1.2rem 0 0.8rem; padding-bottom:0.6rem; border-bottom:1px solid var(--border); }
+        .form-section-title:first-child { margin-top:0; }
+        .form-row { display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; }
+        .field { display:flex; flex-direction:column; gap:0.35rem; margin-bottom:0.75rem; }
+        .field label { font-size:0.68rem; text-transform:uppercase; letter-spacing:0.12em; color:var(--muted); }
+        .field input,.field select,.field textarea {
+            background:var(--dark); border:1px solid var(--border); border-radius:8px;
+            padding:0.85rem 1rem; font-family:'DM Sans',sans-serif; font-size:0.92rem;
+            color:var(--white); outline:none;
+            transition:border-color 0.2s, box-shadow 0.2s; width:100%;
+            -webkit-appearance:none;
+        }
+        .field input:focus,.field select:focus,.field textarea:focus { border-color:var(--green); box-shadow:0 0 0 3px var(--green-glow); }
+        .field select option { background:var(--dark); }
+        .field input::placeholder,.field textarea::placeholder { color:#383838; }
+        .input-wrap { position:relative; }
+        .input-wrap .prefix { position:absolute; left:1rem; top:50%; transform:translateY(-50%); color:var(--green); font-weight:600; pointer-events:none; font-size:0.92rem; }
+        .input-wrap input { padding-left:1.8rem; }
+        .btn-submit {
+            width:100%; background:var(--green); color:var(--black);
+            border:none; border-radius:8px; padding:1.05rem;
+            font-family:'DM Sans',sans-serif; font-size:0.95rem; font-weight:700;
+            cursor:pointer; margin-top:0.8rem;
+            transition:background 0.2s, transform 0.15s, box-shadow 0.2s;
+            letter-spacing:0.04em;
+        }
+        .btn-submit:hover { background:var(--green-dark); transform:translateY(-1px); box-shadow:0 8px 28px rgba(0,230,118,0.25); }
+        .btn-submit:disabled { opacity:0.6; cursor:not-allowed; transform:none; box-shadow:none; }
+        .form-note { text-align:center; font-size:0.73rem; color:var(--muted2); margin-top:0.9rem; }
+
+        /* ═══ FILE UPLOAD ═══ */
+        .file-label {
+            display:flex; flex-direction:column; align-items:center; justify-content:center;
+            gap:0.4rem; background:var(--dark); border:1.5px dashed var(--border);
+            border-radius:8px; padding:1.1rem; cursor:pointer;
+            transition:border-color 0.2s, background 0.2s; text-align:center;
+        }
+        .file-label:hover { border-color:var(--green); background:var(--green-glow); }
+        .file-label input[type="file"] { display:none; }
+        .file-icon { font-size:1.4rem; }
+        .file-text { font-size:0.78rem; color:var(--muted); line-height:1.4; }
+        .file-text strong { color:var(--green); font-weight:500; }
+        .file-name { font-size:0.72rem; color:var(--green); margin-top:0.25rem; display:none; }
+
+        /* ═══ TRUST STRIP ═══ */
+        .trust-strip {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.2rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 2.5rem;
+        }
+        .trust-icon { font-size:1.4rem; flex-shrink:0; }
+        .trust-text { font-size:0.82rem; color:var(--muted); line-height:1.5; }
+        .trust-text strong { color:var(--white); }
+
+        /* ═══ DIVIDER ═══ */
+        .section-divider { border:none; border-top:1px solid var(--border); margin:2.5rem 0; }
+
+        /* ═══ FOOTER ═══ */
+        footer { border-top:1px solid var(--border); padding:2.5rem 1.5rem; text-align:center; }
+        .footer-logo { font-family:'DM Serif Display',serif; font-size:1.6rem; color:var(--white); margin-bottom:0.4rem; }
+        .footer-logo span { color:var(--green); }
+        .footer-tagline { font-size:0.72rem; color:var(--muted2); letter-spacing:0.15em; text-transform:uppercase; margin-bottom:0.8rem; }
+        footer p { font-size:0.72rem; color:#333; }
+
+        /* ═══ WHATSAPP ═══ */
+        .wa-float {
+            position:fixed; bottom:1.5rem; right:1.5rem; z-index:998;
+            display:flex; align-items:center; gap:0.7rem;
+            background:#25D366; color:#fff; border-radius:50px;
+            padding:0.75rem 1.2rem 0.75rem 0.95rem;
+            text-decoration:none; font-weight:600; font-size:0.82rem;
+            box-shadow:0 4px 20px rgba(37,211,102,0.35);
+            transition:transform 0.2s, box-shadow 0.2s;
+            animation: fadeUp 1s 1.5s ease both;
+        }
+        .wa-float:hover { transform:translateY(-2px); box-shadow:0 8px 28px rgba(37,211,102,0.5); }
+        .wa-float svg { width:20px; height:20px; fill:white; flex-shrink:0; }
+
+        /* ═══ ANIMATIONS ═══ */
+        @keyframes fadeUp { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
+        .fade-in { opacity:0; transform:translateY(28px); transition:opacity 0.65s ease, transform 0.65s ease; }
+        .fade-in.visible { opacity:1; transform:translateY(0); }
+
+        /* ═══ RESPONSIVE ═══ */
+        @media (max-width:520px) {
+            .stats-band { grid-template-columns:repeat(2,1fr); }
+            .stat-item:nth-child(2) { border-right:none; }
+            .stat-item:nth-child(3) { border-top:1px solid var(--border); }
+            .stat-item:nth-child(4) { border-top:1px solid var(--border); border-right:none; }
+            .form-row { grid-template-columns:1fr; }
+            .rates-row { grid-template-columns:1fr; }
+            .why-grid { grid-template-columns:1fr; }
+            .nav-logo { font-size:1.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" id="main-nav">
+    <div class="nav-logo">GID<span>.</span></div>
+    <div class="nav-actions">
+        <a href="#seccion-pago" class="nav-btn nav-btn-outline">Reportar Pago</a>
+        <a href="#seccion-solicitud" class="nav-btn nav-btn-solid">Solicitar Crédito</a>
+    </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-glow"></div>
+    <div class="hero-grid"></div>
+    <p class="hero-eyebrow">Inteligencia Financiera · Venezuela</p>
+    <h1 class="hero-title">GID<span class="dot"></span></h1>
+    <p class="hero-sub">Créditos personales y financiamiento PYME con <strong>respuesta en menos de 24 horas</strong> y total confidencialidad.</p>
+    <div class="hero-cta">
+        <a href="#seccion-solicitud" class="cta-primary">Solicitar crédito</a>
+        <a href="#seccion-pago" class="cta-secondary">Reportar un pago</a>
+    </div>
+    <div class="scroll-hint">
+        <div class="scroll-line"></div>
+        Descubre más
+    </div>
+</section>
+
+<!-- STATS BAND -->
+<div class="stats-band">
+    <div class="stat-item">
+        <span class="stat-num"><span class="counter" data-target="5">0</span><span class="stat-suffix">+</span></span>
+        <p class="stat-desc">Años activos</p>
+    </div>
+    <div class="stat-item">
+        <span class="stat-num"><span class="counter" data-target="48">0</span><span class="stat-suffix">h</span></span>
+        <p class="stat-desc">Respuesta máx.</p>
+    </div>
+    <div class="stat-item">
+        <span class="stat-num">$<span class="counter" data-target="100">0</span></span>
+        <p class="stat-desc">Monto mínimo</p>
+    </div>
+    <div class="stat-item">
+        <span class="stat-num"><span class="counter" data-target="0">0</span></span>
+        <p class="stat-desc">Costo de solicitud</p>
+    </div>
+</div>
+
+<!-- MAIN -->
+<main class="main">
+
+    <!-- ¿POR QUÉ ELEGIRNOS? -->
+    <div class="fade-in" style="margin-top:3rem;">
+        <p class="section-label">Ventajas</p>
+        <h2 class="section-title">¿Por qué GID C.A.?</h2>
+        <div class="why-grid">
+            <div class="why-card">
+                <span class="why-icon">⚡</span>
+                <p class="why-title">Respuesta rápida</p>
+                <p class="why-text">Evaluamos tu solicitud en menos de 24 horas. Sin esperas interminables.</p>
+            </div>
+            <div class="why-card">
+                <span class="why-icon">🔒</span>
+                <p class="why-title">100% Confidencial</p>
+                <p class="why-text">Tu información personal y financiera es tratada con absoluta reserva.</p>
+            </div>
+            <div class="why-card">
+                <span class="why-icon">💱</span>
+                <p class="why-title">Múltiples modalidades</p>
+                <p class="why-text">Efectivo, Zelle, USDT o Banesco Panamá. Tú eliges cómo recibir.</p>
+            </div>
+            <div class="why-card">
+                <span class="why-icon">🤝</span>
+                <p class="why-title">Trato personalizado</p>
+                <p class="why-text">Un asesor dedicado te acompaña desde la solicitud hasta el desembolso.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- PROCESO -->
+    <div class="fade-in">
+        <p class="section-label">Proceso</p>
+        <h2 class="section-title">Simple y transparente</h2>
+        <div class="accordion-group">
+            <details class="acc" open>
+                <summary>¿Cómo solicito un crédito?</summary>
+                <div class="acc-content">
+                    <p>Completa el formulario con tus datos y documentos. Evaluamos tu capacidad en menos de 24 horas y, tras la aprobación, realizamos el desembolso en la modalidad que prefieras.</p>
+                </div>
+            </details>
+            <details class="acc">
+                <summary>Modalidades de desembolso</summary>
+                <div class="acc-content">
+                    <ul>
+                        <li><strong>Efectivo</strong> — Nuestro equipo va hasta ti.</li>
+                        <li><strong>USDT</strong> — Transferencia cripto a tu billetera.</li>
+                        <li><strong>Banesco Panamá</strong> — Transferencia bancaria internacional.</li>
+                        <li><strong>Zelle</strong> — Transferencia instantánea en USD.</li>
+                    </ul>
+                </div>
+            </details>
+            <details class="acc">
+                <summary>Garantías aceptadas</summary>
+                <div class="acc-content">
+                    <p>Inmuebles, vehículos, garantías líquidas (USDT / efectivo), maquinaria y más. Cada caso se evalúa individualmente con tu asesor.</p>
+                </div>
+            </details>
+            <details class="acc">
+                <summary>¿Qué documentos necesito?</summary>
+                <div class="acc-content">
+                    <p>Cédula de identidad vigente y RIF si aplica. Dependiendo del monto y tipo de crédito, tu asesor podría solicitar documentación adicional.</p>
+                </div>
+            </details>
+        </div>
+    </div>
+
+    <!-- TASAS -->
+    <div class="fade-in">
+        <p class="section-label">Tarifas</p>
+        <h2 class="section-title">Tasas competitivas</h2>
+        <div class="rates-row">
+            <div class="rate-card featured">
+                <span class="rate-badge">Más solicitado</span>
+                <p class="rate-type">Crédito Personal</p>
+                <p class="rate-val">Desde 8%</p>
+                <p class="rate-desc">Tasa mensual · Evaluación individual</p>
+            </div>
+            <div class="rate-card">
+                <span class="rate-badge" style="color:var(--muted);background:transparent;border-color:var(--border);">Empresarial</span>
+                <p class="rate-type">Financiamiento PYME</p>
+                <p class="rate-val">Preferencial</p>
+                <p class="rate-desc">Según proyecto y perfil empresarial</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- FORMULARIO SOLICITUD -->
+    <div id="seccion-solicitud" style="scroll-margin-top:70px"></div>
+    <div class="fade-in">
+        <p class="section-label">Solicitud</p>
+        <h2 class="section-title">Solicita tu crédito</h2>
+
+        <div class="trust-strip">
+            <span class="trust-icon">🔐</span>
+            <p class="trust-text"><strong>Proceso 100% seguro.</strong> Tus datos y documentos son cifrados y nunca compartidos con terceros.</p>
+        </div>
+
+        <div class="form-card">
+            <form id="gid-form">
+                <p class="form-section-title">Datos personales</p>
+                <div class="field">
+                    <label>Nombre completo</label>
+                    <input type="text" name="nombre" placeholder="Ej. Carlos Rodríguez" required>
+                </div>
+                <div class="form-row">
+                    <div class="field">
+                        <label>Cédula de identidad</label>
+                        <input type="text" name="cedula" placeholder="V-12.345.678" required>
+                    </div>
+                    <div class="field">
+                        <label>RIF (si aplica)</label>
+                        <input type="text" name="rif" placeholder="J-12345678-9">
+                    </div>
+                </div>
+                <div class="field">
+                    <label>WhatsApp y correo — indispensable</label>
+                    <input type="text" name="telefono" placeholder="+58 412 000 0000  ·  correo@gmail.com" required>
+                </div>
+
+                <p class="form-section-title">Detalle del crédito</p>
+                <div class="field">
+                    <label>Monto solicitado (USD)</label>
+                    <div class="input-wrap">
+                        <span class="prefix">$</span>
+                        <input type="number" name="monto_solicitado" placeholder="5,000" min="100" step="100" required>
+                    </div>
+                </div>
+                <div class="field">
+                    <label>Garantía ofrecida</label>
+                    <select name="garantia" required>
+                        <option value="" disabled selected>Seleccione una opción</option>
+                        <option value="inmueble">Bien inmueble (casa / apartamento / terreno)</option>
+                        <option value="vehiculo">Vehículo</option>
+                        <option value="garantia_liquida">Garantía líquida (USDT / efectivo)</option>
+                        <option value="maquinaria">Maquinaria o equipo</option>
+                        <option value="otra">Otra (describir abajo)</option>
+                        <option value="ninguna">Sin garantía / A evaluar</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Destino del financiamiento</label>
+                    <textarea name="mensaje" rows="3" placeholder="Describa brevemente para qué usará el crédito..." required></textarea>
+                </div>
+
+                <p class="form-section-title">Documentos</p>
+                <div class="form-row">
+                    <div class="field">
+                        <label>Copia de cédula</label>
+                        <label class="file-label">
+                            <input type="file" id="file-cedula" accept="image/*,.pdf">
+                            <span class="file-icon">🪪</span>
+                            <span class="file-text"><strong>Subir archivo</strong><br>PDF o imagen</span>
+                        </label>
+                        <span class="file-name" id="name-cedula"></span>
+                    </div>
+                    <div class="field">
+                        <label>Copia de RIF</label>
+                        <label class="file-label">
+                            <input type="file" id="file-rif" accept="image/*,.pdf">
+                            <span class="file-icon">📄</span>
+                            <span class="file-text"><strong>Subir archivo</strong><br>PDF o imagen</span>
+                        </label>
+                        <span class="file-name" id="name-rif"></span>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit" id="btn-enviar">Enviar solicitud →</button>
+                <p class="form-note" id="form-status">Un asesor le contactará dentro de las próximas 24 horas.</p>
+            </form>
+        </div>
+    </div>
+
+    <hr class="section-divider">
+
+    <!-- FORMULARIO PAGOS -->
+    <div id="seccion-pago" style="scroll-margin-top:70px"></div>
+    <div class="fade-in">
+        <p class="section-label">Gestión</p>
+        <h2 class="section-title">Reportar un pago</h2>
+
+        <div class="form-card">
+            <form id="pago-form">
+                <p class="form-section-title">Identificación</p>
+                <div class="field">
+                    <label>Nombre completo</label>
+                    <input type="text" name="pago_nombre" placeholder="Ej. Carlos Rodríguez" required>
+                </div>
+                <div class="field">
+                    <label>Cédula de identidad</label>
+                    <input type="text" name="pago_cedula" placeholder="V-12.345.678" required>
+                </div>
+
+                <p class="form-section-title">Detalle del abono</p>
+                <div class="field">
+                    <label>Monto abonado (USD)</label>
+                    <div class="input-wrap">
+                        <span class="prefix">$</span>
+                        <input type="number" name="pago_monto" placeholder="500" min="1" step="1" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="field">
+                        <label>Tipo de abono</label>
+                        <select name="pago_tipo" required>
+                            <option value="" disabled selected>Seleccione</option>
+                            <option value="intereses">Solo intereses</option>
+                            <option value="capital_interes">Capital + intereses</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label>Método de pago</label>
+                        <select name="pago_metodo" required id="pago-metodo-select">
+                            <option value="" disabled selected>Seleccione</option>
+                            <option value="efectivo">Efectivo (retiro)</option>
+                            <option value="zelle">Zelle</option>
+                            <option value="usdt">USDT</option>
+                            <option value="banesco">Banesco Panamá</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="field" id="campo-direccion" style="display:none;">
+                    <label>Dirección de retiro</label>
+                    <textarea name="pago_direccion" rows="2" placeholder="Indique la dirección exacta donde pasará nuestro equipo..."></textarea>
+                </div>
+                <div class="field">
+                    <label>Dudas, sugerencias o reclamos (opcional)</label>
+                    <textarea name="pago_mensaje" rows="2" placeholder="Escriba aquí cualquier consulta o comentario..."></textarea>
+                </div>
+
+                <p class="form-section-title">Comprobantes</p>
+                <div class="form-row">
+                    <div class="field">
+                        <label>Foto / Recibo 1</label>
+                        <label class="file-label">
+                            <input type="file" id="file-pago1" accept="image/*,.pdf">
+                            <span class="file-icon">📸</span>
+                            <span class="file-text"><strong>Subir archivo</strong><br>Imagen o PDF</span>
+                        </label>
+                        <span class="file-name" id="name-pago1"></span>
+                    </div>
+                    <div class="field">
+                        <label>Foto / Recibo 2 (opcional)</label>
+                        <label class="file-label">
+                            <input type="file" id="file-pago2" accept="image/*,.pdf">
+                            <span class="file-icon">📸</span>
+                            <span class="file-text"><strong>Subir archivo</strong><br>Imagen o PDF</span>
+                        </label>
+                        <span class="file-name" id="name-pago2"></span>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit" id="btn-pago">Reportar pago →</button>
+                <p class="form-note" id="pago-status">Nuestro equipo confirmará su pago a la brevedad.</p>
+            </form>
+        </div>
+    </div>
+
+</main>
+
+<footer>
+    <div class="footer-logo">GID<span>.</span></div>
+    <p class="footer-tagline">Inteligencia Financiera</p>
+    <p>© 2026 GID C.A. · Seguridad y Confidencialidad · Todos los derechos reservados</p>
+</footer>
+
+<!-- WHATSAPP -->
+<a class="wa-float" href="https://wa.me/+584123328382?text=Hola%20GID%20C.A.%2C%20me%20interesa%20solicitar%20un%20cr%C3%A9dito." target="_blank">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+    </svg>
+    Escríbenos
+</a>
+
+<script>
+    // ── archivoABase64: declarada primero ──
+    function archivoABase64(file) {
+        return new Promise(function(resolve, reject) {
+            if (!file) return resolve(null);
+            var reader = new FileReader();
+            reader.onload  = function() { resolve(reader.result.split(',')[1]); };
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
+    }
+
+    // ── File name display ──
+    function bindFile(inputId, displayId) {
+        var el = document.getElementById(inputId);
+        if (!el) return;
+        el.addEventListener('change', function() {
+            var d = document.getElementById(displayId);
+            if (this.files && this.files[0]) { d.textContent = '✓ ' + this.files[0].name; d.style.display = 'block'; }
+        });
+    }
+    bindFile('file-cedula','name-cedula');
+    bindFile('file-rif',   'name-rif');
+    bindFile('file-pago1', 'name-pago1');
+    bindFile('file-pago2', 'name-pago2');
+
+    // ── URLs Apps Script ──
+    var URL_SOLICITUD = "https://script.google.com/macros/s/AKfycbz9drOtJUY_oqvdrv8VoHb_TzBCfISsxz5DADCyRfNHkDN_mSTg0yZPH0zw1zszWbCpGw/exec";
+    var URL_PAGOS     = "https://script.google.com/macros/s/AKfycbzzv6pfxzH7Ox7PLZ-_BizqmR5iurXoqRTSY8GhioombjO8r8FtfGuudfktYSqJxy1H/exec";
+
+    // ── Enviar a Apps Script ──
+    async function enviar(url, datos) {
+        var resp = await fetch(url, { method:'POST', redirect:'follow', body: JSON.stringify(datos) });
+        var text = await resp.text();
+        try { var j = JSON.parse(text); if (j.resultado === 'error') throw new Error(j.detalle || 'error'); } catch(e) { if (e.message === 'error') throw e; }
+    }
+
+    // ── SOLICITUD ──
+    document.getElementById('gid-form').addEventListener('submit', async function(ev) {
+        ev.preventDefault();
+        var btn = document.getElementById('btn-enviar'), status = document.getElementById('form-status');
+        btn.disabled = true; btn.textContent = 'Enviando...';
+        status.textContent = 'Procesando su solicitud...'; status.style.color = '#aaa';
+        var f = ev.target;
+        var datos = { nombre:f.nombre.value, cedula:f.cedula.value, rif:f.rif.value, telefono:f.telefono.value, monto_solicitado:f.monto_solicitado.value, garantia:f.garantia.value, mensaje:f.mensaje.value };
+        var fc = document.getElementById('file-cedula').files[0];
+        var fr = document.getElementById('file-rif').files[0];
+        if (fc) { datos.cedula_base64 = await archivoABase64(fc); datos.cedula_nombre = fc.name; datos.cedula_tipo = fc.type; }
+        if (fr) { datos.rif_base64    = await archivoABase64(fr); datos.rif_nombre    = fr.name; datos.rif_tipo    = fr.type; }
+        try {
+            await enviar(URL_SOLICITUD, datos);
+            status.textContent = '✅ Solicitud enviada. Un asesor le contactará pronto.'; status.style.color = '#00e676';
+            f.reset(); document.querySelectorAll('.file-name').forEach(function(el){el.style.display='none';}); btn.textContent = 'Enviado ✓';
+        } catch(e) {
+            status.textContent = 'Error al enviar. Contáctenos por WhatsApp.'; status.style.color = '#ff5252';
+            btn.disabled = false; btn.textContent = 'Enviar solicitud →';
+        }
+    });
+
+    // ── Dirección efectivo ──
+    document.getElementById('pago-metodo-select').addEventListener('change', function() {
+        var c = document.getElementById('campo-direccion'), t = c.querySelector('textarea');
+        if (this.value === 'efectivo') { c.style.display='flex'; t.required=true; }
+        else { c.style.display='none'; t.required=false; }
+    });
+
+    // ── PAGOS ──
+    document.getElementById('pago-form').addEventListener('submit', async function(ev) {
+        ev.preventDefault();
+        var btn = document.getElementById('btn-pago'), status = document.getElementById('pago-status');
+        
+        btn.disabled = true; 
+        btn.textContent = 'Enviando...';
+        status.textContent = 'Procesando su reporte...'; 
+        status.style.color = '#aaa';
+        
+        var f = ev.target;
+        var cDir = document.getElementById('campo-direccion');
+        var dirVisible = cDir.style.display !== 'none';
+        
+        var datos = { 
+            tipo:'pago', 
+            nombre:f.pago_nombre.value, 
+            cedula:f.pago_cedula.value, 
+            monto:f.pago_monto.value, 
+            tipo_abono:f.pago_tipo.value, 
+            metodo:f.pago_metodo.value, 
+            direccion: dirVisible ? cDir.querySelector('textarea').value : '', 
+            mensaje:f.pago_mensaje.value 
+        };
+
+        var f1 = document.getElementById('file-pago1').files[0];
+        var f2 = document.getElementById('file-pago2').files[0];
+
+        if (f1) { datos.pago1_base64 = await archivoABase64(f1); datos.pago1_nombre = f1.name; datos.pago1_tipo = f1.type; }
+        if (f2) { datos.pago2_base64 = await archivoABase64(f2); datos.pago2_nombre = f2.name; datos.pago2_tipo = f2.type; }
+
+        try {
+            // Fetch directo con no-cors para saltar el bloqueo visual de Google
+            await fetch(URL_PAGOS, { 
+                method: 'POST', 
+                mode: 'no-cors', 
+                body: JSON.stringify(datos) 
+            });
+
+            status.textContent = '✅ Pago reportado. Nuestro equipo le confirmará pronto.'; 
+            status.style.color = '#00e676';
+            f.reset(); 
+            if(cDir) { cDir.style.display='none'; cDir.querySelector('textarea').required=false; }
+            document.querySelectorAll('.file-name').forEach(function(el){ el.style.display='none'; }); 
+            btn.textContent = 'Enviado ✓';
+
+        } catch(e) {
+            status.textContent = 'Error de conexión. Intente por WhatsApp.'; 
+            status.style.color = '#ff5252';
+            btn.disabled = false; 
+            btn.textContent = 'Reportar pago →';
+        }
+    });
+
+    // ── Nav scrolled ──
+    var nav = document.getElementById('main-nav');
+    window.addEventListener('scroll', function() {
+        nav.classList.toggle('scrolled', window.scrollY > 60);
+    }, { passive:true });
+
+    // ── Fade-in ──
+    var io = new IntersectionObserver(function(entries) {
+        entries.forEach(function(e) { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold:0.08 });
+    document.querySelectorAll('.fade-in').forEach(function(el){ io.observe(el); });
+
+    // ── Contador animado ──
+    var counters = document.querySelectorAll('.counter');
+    var counted  = false;
+    var statsEl  = document.querySelector('.stats-band');
+    var statsObs = new IntersectionObserver(function(entries) {
+        if (entries[0].isIntersecting && !counted) {
+            counted = true;
+            counters.forEach(function(c) {
+                var target = parseInt(c.getAttribute('data-target'), 10);
+                if (target === 0) return;
+                var duration = 1200, step = Math.ceil(duration / target / 16);
+                var current = 0;
+                var timer = setInterval(function() {
+                    current += step;
+                    if (current >= target) { current = target; clearInterval(timer); }
+                    c.textContent = current;
+                }, 16);
+            });
+        }
+    }, { threshold:0.5 });
+    if (statsEl) statsObs.observe(statsEl);
+
+    // ── Scroll suave ──
+    document.querySelectorAll('a[href^="#"]').forEach(function(a) {
+        a.addEventListener('click', function(e) {
+            var t = document.querySelector(this.getAttribute('href'));
+            if (t) { e.preventDefault(); t.scrollIntoView({ behavior:'smooth' }); }
+        });
+    });
+</script>
+</body>
+</html>
