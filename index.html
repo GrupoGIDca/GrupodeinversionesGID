@@ -28,17 +28,16 @@
         .nav {
             position: fixed; top:0; left:0; right:0; z-index:999;
             display: flex; justify-content:space-between; align-items:center;
-            padding: 1rem 1.5rem;
-            background: rgba(10,10,10,0);
-            transition: background 0.4s, border-color 0.4s, padding 0.3s;
-            border-bottom: 1px solid transparent;
-        }
-        .nav.scrolled {
+            padding: 0.7rem 1.5rem;
             background: rgba(10,10,10,0.92);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
-            border-color: var(--border);
-            padding: 0.7rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            transform: translateY(-100%);
+            transition: transform 0.4s ease;
+        }
+        .nav.visible {
+            transform: translateY(0);
         }
         .nav-logo {
             font-family:'DM Serif Display',serif;
@@ -142,7 +141,7 @@
             margin-top: 1.5rem;
             font-size: clamp(0.9rem, 2.5vw, 1.1rem);
             color: var(--muted);
-            max-width: 380px;
+            max-width: 420px;
             line-height: 1.6;
             animation: fadeUp 0.7s 0.35s ease both;
         }
@@ -172,11 +171,12 @@
         .cta-secondary:hover { border-color: var(--muted); color: var(--white); }
 
         .scroll-hint {
-            position: absolute; bottom: 2rem; left:50%; transform: translateX(-50%);
+            position: absolute; bottom: 1rem; left:50%; transform: translateX(-50%);
             display: flex; flex-direction: column; align-items:center; gap:0.5rem;
             color: var(--muted2); font-size: 0.65rem; letter-spacing: 0.25em;
             text-transform: uppercase; white-space: nowrap;
             animation: fadeUp 1s 1.2s ease both;
+            z-index: 1;
         }
         .scroll-line {
             width: 1px; height: 36px;
@@ -377,7 +377,7 @@
     <div class="hero-grid"></div>
     <p class="hero-eyebrow">Inteligencia Financiera · Venezuela</p>
     <h1 class="hero-title">GID<span class="dot"></span></h1>
-    <p class="hero-sub">Créditos personales y financiamiento PYME con <strong>respuesta en menos de 24 horas</strong> y total confidencialidad.</p>
+    <p class="hero-sub">Créditos personales, financiamiento PYME y <strong>asesoría en inversiones tradicionales y criptoactivos</strong> con respuesta en menos de 24 horas.</p>
     <div class="hero-cta">
         <a href="#seccion-solicitud" class="cta-primary">Solicitar crédito</a>
         <a href="#seccion-pago" class="cta-secondary">Reportar un pago</a>
@@ -494,6 +494,14 @@
                 <p class="rate-desc">Según proyecto y perfil empresarial</p>
             </div>
         </div>
+        <div class="rates-row" style="margin-top:0.8rem;">
+            <div class="rate-card" style="grid-column:1/-1;">
+                <span class="rate-badge" style="color:var(--green);background:var(--green-glow);border-color:rgba(0,230,118,0.2);">Asesoría</span>
+                <p class="rate-type">Gestión de Inversiones</p>
+                <p class="rate-val">Consultoría</p>
+                <p class="rate-desc">Portafolios tradicionales y estrategias en criptoactivos · Sesiones personalizadas</p>
+            </div>
+        </div>
     </div>
 
     <!-- FORMULARIO SOLICITUD -->
@@ -534,7 +542,7 @@
                     <label>Monto solicitado (USD)</label>
                     <div class="input-wrap">
                         <span class="prefix">$</span>
-                        <input type="number" name="monto_solicitado" placeholder="5,000" min="100" step="100" required>
+                        <input type="number" name="monto_solicitado" placeholder="5,000" required>
                     </div>
                 </div>
                 <div class="field">
@@ -550,8 +558,8 @@
                     </select>
                 </div>
                 <div class="field">
-                    <label>Destino del financiamiento</label>
-                    <textarea name="mensaje" rows="3" placeholder="Describa brevemente para qué usará el crédito..." required></textarea>
+                    <label>Información financiera completa</label>
+                    <textarea name="mensaje" rows="6" placeholder="Por favor incluya:&#10;• Destino del crédito (¿para qué lo usará?)&#10;• Fondos disponibles (ahorros, inversiones, activos)&#10;• Ingresos mensuales actuales&#10;• Plan de pago propuesto (¿cómo planea pagar el crédito?)" required></textarea>
                 </div>
 
                 <p class="form-section-title">Documentos</p>
@@ -715,13 +723,8 @@
 
     // ── Enviar a Apps Script ──
     async function enviar(url, datos) {
-    // Usamos no-cors para que no bloquee la respuesta visualmente
-    await fetch(url, { 
-        method:'POST', 
-        mode: 'no-cors', 
-        body: JSON.stringify(datos) 
-    });
-}
+        await fetch(url, { method:'POST', mode:'no-cors', body: JSON.stringify(datos) });
+    }
 
     // ── SOLICITUD ──
     document.getElementById('gid-form').addEventListener('submit', async function(ev) {
@@ -756,60 +759,31 @@
     document.getElementById('pago-form').addEventListener('submit', async function(ev) {
         ev.preventDefault();
         var btn = document.getElementById('btn-pago'), status = document.getElementById('pago-status');
-        
-        btn.disabled = true; 
-        btn.textContent = 'Enviando...';
-        status.textContent = 'Procesando su reporte...'; 
-        status.style.color = '#aaa';
-        
+        btn.disabled = true; btn.textContent = 'Enviando...';
+        status.textContent = 'Procesando su reporte...'; status.style.color = '#aaa';
         var f = ev.target;
         var cDir = document.getElementById('campo-direccion');
         var dirVisible = cDir.style.display !== 'none';
-        
-        var datos = { 
-            tipo:'pago', 
-            nombre:f.pago_nombre.value, 
-            cedula:f.pago_cedula.value, 
-            monto:f.pago_monto.value, 
-            tipo_abono:f.pago_tipo.value, 
-            metodo:f.pago_metodo.value, 
-            direccion: dirVisible ? cDir.querySelector('textarea').value : '', 
-            mensaje:f.pago_mensaje.value 
-        };
-
+        var datos = { tipo:'pago', nombre:f.pago_nombre.value, cedula:f.pago_cedula.value, monto:f.pago_monto.value, tipo_abono:f.pago_tipo.value, metodo:f.pago_metodo.value, direccion: dirVisible ? cDir.querySelector('textarea').value : '', mensaje:f.pago_mensaje.value };
         var f1 = document.getElementById('file-pago1').files[0];
         var f2 = document.getElementById('file-pago2').files[0];
-
         if (f1) { datos.pago1_base64 = await archivoABase64(f1); datos.pago1_nombre = f1.name; datos.pago1_tipo = f1.type; }
         if (f2) { datos.pago2_base64 = await archivoABase64(f2); datos.pago2_nombre = f2.name; datos.pago2_tipo = f2.type; }
-
         try {
-            // Fetch directo con no-cors para saltar el bloqueo visual de Google
-            await fetch(URL_PAGOS, { 
-                method: 'POST', 
-                mode: 'no-cors', 
-                body: JSON.stringify(datos) 
-            });
-
-            status.textContent = '✅ Pago reportado. Nuestro equipo le confirmará pronto.'; 
-            status.style.color = '#00e676';
-            f.reset(); 
-            if(cDir) { cDir.style.display='none'; cDir.querySelector('textarea').required=false; }
-            document.querySelectorAll('.file-name').forEach(function(el){ el.style.display='none'; }); 
-            btn.textContent = 'Enviado ✓';
-
+            await fetch(URL_PAGOS, { method: 'POST', mode: 'no-cors', body: JSON.stringify(datos) });
+            status.textContent = '✅ Pago reportado. Nuestro equipo le confirmará pronto.'; status.style.color = '#00e676';
+            f.reset(); if(cDir) { cDir.style.display='none'; cDir.querySelector('textarea').required=false; }
+            document.querySelectorAll('.file-name').forEach(function(el){ el.style.display='none'; }); btn.textContent = 'Enviado ✓';
         } catch(e) {
-            status.textContent = 'Error de conexión. Intente por WhatsApp.'; 
-            status.style.color = '#ff5252';
-            btn.disabled = false; 
-            btn.textContent = 'Reportar pago →';
+            status.textContent = 'Error de conexión. Intente por WhatsApp.'; status.style.color = '#ff5252';
+            btn.disabled = false; btn.textContent = 'Reportar pago →';
         }
     });
 
-    // ── Nav scrolled ──
+    // ── Nav aparece al hacer scroll ──
     var nav = document.getElementById('main-nav');
     window.addEventListener('scroll', function() {
-        nav.classList.toggle('scrolled', window.scrollY > 60);
+        nav.classList.toggle('visible', window.scrollY > window.innerHeight * 0.7);
     }, { passive:true });
 
     // ── Fade-in ──
