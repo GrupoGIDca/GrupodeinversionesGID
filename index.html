@@ -715,10 +715,13 @@
 
     // ── Enviar a Apps Script ──
     async function enviar(url, datos) {
-        var resp = await fetch(url, { method:'POST', redirect:'follow', body: JSON.stringify(datos) });
-        var text = await resp.text();
-        try { var j = JSON.parse(text); if (j.resultado === 'error') throw new Error(j.detalle || 'error'); } catch(e) { if (e.message === 'error') throw e; }
-    }
+    // Usamos no-cors para que no bloquee la respuesta visualmente
+    await fetch(url, { 
+        method:'POST', 
+        mode: 'no-cors', 
+        body: JSON.stringify(datos) 
+    });
+}
 
     // ── SOLICITUD ──
     document.getElementById('gid-form').addEventListener('submit', async function(ev) {
