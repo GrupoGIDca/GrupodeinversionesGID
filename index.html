@@ -532,17 +532,35 @@
                         <input type="text" name="rif" placeholder="J-12345678-9">
                     </div>
                 </div>
-                <div class="field">
-                    <label>WhatsApp y correo — indispensable</label>
-                    <input type="text" name="telefono" placeholder="+58 412 000 0000  ·  correo@gmail.com" required>
+                <div class="form-row">
+                    <div class="field">
+                        <label>Número de WhatsApp</label>
+                        <input type="tel" name="telefono" placeholder="+58 412 000 0000" required>
+                    </div>
+                    <div class="field">
+                        <label>Correo electrónico</label>
+                        <input type="email" name="correo" placeholder="ejemplo@correo.com" required>
+                    </div>
                 </div>
 
                 <p class="form-section-title">Detalle del crédito</p>
-                <div class="field">
-                    <label>Monto solicitado (USD)</label>
-                    <div class="input-wrap">
-                        <span class="prefix">$</span>
-                        <input type="number" name="monto_solicitado" placeholder="5,000" required>
+                <div class="form-row">
+                    <div class="field">
+                        <label>Monto solicitado (USD)</label>
+                        <div class="input-wrap">
+                            <span class="prefix">$</span>
+                            <input type="number" name="monto_solicitado" placeholder="5,000" required>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Método de desembolso preferido</label>
+                        <select name="metodo_desembolso" required>
+                            <option value="" disabled selected>¿Cómo desea recibir?</option>
+                            <option value="efectivo">Efectivo (retiro a domicilio)</option>
+                            <option value="zelle">Zelle</option>
+                            <option value="usdt">USDT (criptomoneda)</option>
+                            <option value="banesco">Banesco Panamá</option>
+                        </select>
                     </div>
                 </div>
                 <div class="field">
@@ -605,19 +623,18 @@
                     <label>Nombre completo</label>
                     <input type="text" name="pago_nombre" placeholder="Ej. Carlos Rodríguez" required>
                 </div>
-                <div class="field">
-                    <label>Cédula de identidad</label>
-                    <input type="text" name="pago_cedula" placeholder="V-12.345.678" required>
+                <div class="form-row">
+                    <div class="field">
+                        <label>Cédula de identidad</label>
+                        <input type="text" name="pago_cedula" placeholder="V-12.345.678" required>
+                    </div>
+                    <div class="field">
+                        <label>Correo electrónico</label>
+                        <input type="email" name="pago_correo" placeholder="ejemplo@correo.com" required>
+                    </div>
                 </div>
 
                 <p class="form-section-title">Detalle del abono</p>
-                <div class="field">
-                    <label>Monto abonado (USD)</label>
-                    <div class="input-wrap">
-                        <span class="prefix">$</span>
-                        <input type="number" name="pago_monto" placeholder="500" min="1" step="1" required>
-                    </div>
-                </div>
                 <div class="form-row">
                     <div class="field">
                         <label>Tipo de abono</label>
@@ -631,11 +648,35 @@
                         <label>Método de pago</label>
                         <select name="pago_metodo" required id="pago-metodo-select">
                             <option value="" disabled selected>Seleccione</option>
-                            <option value="efectivo">Efectivo (retiro)</option>
+                            <option value="efectivo_usd">Efectivo USD (retiro a domicilio)</option>
                             <option value="zelle">Zelle</option>
                             <option value="usdt">USDT</option>
                             <option value="banesco">Banesco Panamá</option>
+                            <option value="bolivares">Bolívares</option>
+                            <option value="mixto">Pago mixto (USD + Bolívares)</option>
                         </select>
+                    </div>
+                </div>
+                
+                <!-- Campos USD - siempre visible para efectivo, zelle, usdt, banesco -->
+                <div class="field" id="campo-monto-usd">
+                    <label>Monto en USD</label>
+                    <div class="input-wrap">
+                        <span class="prefix">$</span>
+                        <input type="number" name="pago_monto_usd" id="input-monto-usd" placeholder="500" min="0" step="0.01">
+                    </div>
+                </div>
+                
+                <!-- Campos Bolívares - solo visible si selecciona bolivares o mixto -->
+                <div id="campos-bolivares" style="display:none;">
+                    <div class="field">
+                        <label>Monto en Bolívares</label>
+                        <input type="number" name="pago_monto_bs" id="input-monto-bs" placeholder="22500.00" min="0" step="0.01">
+                    </div>
+                    <div class="field">
+                        <label>Tasa de cambio negociada (Bs por cada USD)</label>
+                        <input type="number" name="pago_tasa" id="input-tasa" placeholder="Ej: 45.50" step="0.01">
+                        <span style="font-size:0.7rem; color:var(--muted); margin-top:0.3rem; display:block;">Ingrese la tasa que acordó previamente con nosotros</span>
                     </div>
                 </div>
                 <div class="field" id="campo-direccion" style="display:none;">
@@ -718,8 +759,8 @@
     bindFile('file-pago2', 'name-pago2');
 
     // ── URLs Apps Script ──
-    var URL_SOLICITUD = "https://script.google.com/macros/s/AKfycbzjq1u468eIlmWk8frluFodKarh7_3mjSmgUipr6Mm1wec3w49UpvKicO6Ryr4W_wy6/exec";
-    var URL_PAGOS     = "https://script.google.com/macros/s/AKfycbzzv6pfxzH7Ox7PLZ-_BizqmR5iurXoqRTSY8GhioombjO8r8FtfGuudfktYSqJxy1H/exec";
+    var URL_SOLICITUD = "https://script.google.com/macros/s/AKfycbwwMOIdsFWtSaZY3u022wxMJD_IZ3V3_9FtcsHxDblrjDTaLx0tzGb0xlE--8ieMFZS/exec";
+    var URL_PAGOS     = "https://script.google.com/macros/s/AKfycbwwMOIdsFWtSaZY3u022wxMJD_IZ3V3_9FtcsHxDblrjDTaLx0tzGb0xlE--8ieMFZS/exec";
 
     // ── Enviar a Apps Script ──
     async function enviar(url, datos) {
@@ -733,14 +774,14 @@
         btn.disabled = true; btn.textContent = 'Enviando...';
         status.textContent = 'Procesando su solicitud...'; status.style.color = '#aaa';
         var f = ev.target;
-        var datos = { nombre:f.nombre.value, cedula:f.cedula.value, rif:f.rif.value, telefono:f.telefono.value, monto_solicitado:f.monto_solicitado.value, garantia:f.garantia.value, mensaje:f.mensaje.value };
+        var datos = { nombre:f.nombre.value, cedula:f.cedula.value, rif:f.rif.value, telefono:f.telefono.value, correo:f.correo.value, monto_solicitado:f.monto_solicitado.value, metodo_desembolso:f.metodo_desembolso.value, garantia:f.garantia.value, mensaje:f.mensaje.value };
         var fc = document.getElementById('file-cedula').files[0];
         var fr = document.getElementById('file-rif').files[0];
         if (fc) { datos.cedula_base64 = await archivoABase64(fc); datos.cedula_nombre = fc.name; datos.cedula_tipo = fc.type; }
         if (fr) { datos.rif_base64    = await archivoABase64(fr); datos.rif_nombre    = fr.name; datos.rif_tipo    = fr.type; }
         try {
             await enviar(URL_SOLICITUD, datos);
-            status.textContent = '✅ Solicitud enviada. Un asesor le contactará pronto.'; status.style.color = '#00e676';
+            status.textContent = '✅ Solicitud enviada. Recibirá un correo de confirmación.'; status.style.color = '#00e676';
             f.reset(); document.querySelectorAll('.file-name').forEach(function(el){el.style.display='none';}); btn.textContent = 'Enviado ✓';
         } catch(e) {
             status.textContent = 'Error al enviar. Contáctenos por WhatsApp.'; status.style.color = '#ff5252';
@@ -748,11 +789,48 @@
         }
     });
 
-    // ── Dirección efectivo ──
+    // ── Lógica condicional de campos según método de pago ──
     document.getElementById('pago-metodo-select').addEventListener('change', function() {
-        var c = document.getElementById('campo-direccion'), t = c.querySelector('textarea');
-        if (this.value === 'efectivo') { c.style.display='flex'; t.required=true; }
-        else { c.style.display='none'; t.required=false; }
+        var metodo = this.value;
+        var campoDireccion = document.getElementById('campo-direccion');
+        var textareaDireccion = campoDireccion.querySelector('textarea');
+        var camposBolivares = document.getElementById('campos-bolivares');
+        var campoMontoUSD = document.getElementById('campo-monto-usd');
+        var inputMontoUSD = document.getElementById('input-monto-usd');
+        var inputMontoBS = document.getElementById('input-monto-bs');
+        var inputTasa = document.getElementById('input-tasa');
+        
+        // Reset todos los campos opcionales
+        campoDireccion.style.display = 'none';
+        textareaDireccion.required = false;
+        camposBolivares.style.display = 'none';
+        inputMontoBS.required = false;
+        inputTasa.required = false;
+        campoMontoUSD.style.display = 'flex';
+        inputMontoUSD.required = true;
+        
+        // Lógica según método seleccionado
+        if (metodo === 'efectivo_usd') {
+            // Efectivo USD: mostrar dirección
+            campoDireccion.style.display = 'flex';
+            textareaDireccion.required = true;
+        } 
+        else if (metodo === 'bolivares') {
+            // Solo bolívares: ocultar USD, mostrar Bs y tasa
+            campoMontoUSD.style.display = 'none';
+            inputMontoUSD.required = false;
+            camposBolivares.style.display = 'block';
+            inputMontoBS.required = true;
+            inputTasa.required = true;
+        }
+        else if (metodo === 'mixto') {
+            // Mixto: mostrar ambos campos
+            camposBolivares.style.display = 'block';
+            inputMontoBS.required = true;
+            inputTasa.required = true;
+            inputMontoUSD.required = true;
+        }
+        // Para zelle, usdt, banesco: solo campo USD (ya visible por defecto)
     });
 
     // ── PAGOS ──
@@ -761,19 +839,39 @@
         var btn = document.getElementById('btn-pago'), status = document.getElementById('pago-status');
         btn.disabled = true; btn.textContent = 'Enviando...';
         status.textContent = 'Procesando su reporte...'; status.style.color = '#aaa';
+        
         var f = ev.target;
         var cDir = document.getElementById('campo-direccion');
         var dirVisible = cDir.style.display !== 'none';
-        var datos = { tipo:'pago', nombre:f.pago_nombre.value, cedula:f.pago_cedula.value, monto:f.pago_monto.value, tipo_abono:f.pago_tipo.value, metodo:f.pago_metodo.value, direccion: dirVisible ? cDir.querySelector('textarea').value : '', mensaje:f.pago_mensaje.value };
+        
+        var datos = { 
+            tipo:'pago', 
+            nombre:f.pago_nombre.value, 
+            cedula:f.pago_cedula.value,
+            correo:f.pago_correo.value,
+            monto_usd:f.pago_monto_usd.value || '0',
+            monto_bs:f.pago_monto_bs.value || '0',
+            tasa:f.pago_tasa ? f.pago_tasa.value : '',
+            tipo_abono:f.pago_tipo.value, 
+            metodo:f.pago_metodo.value, 
+            direccion: dirVisible ? cDir.querySelector('textarea').value : '', 
+            mensaje:f.pago_mensaje.value 
+        };
+        
         var f1 = document.getElementById('file-pago1').files[0];
         var f2 = document.getElementById('file-pago2').files[0];
         if (f1) { datos.pago1_base64 = await archivoABase64(f1); datos.pago1_nombre = f1.name; datos.pago1_tipo = f1.type; }
         if (f2) { datos.pago2_base64 = await archivoABase64(f2); datos.pago2_nombre = f2.name; datos.pago2_tipo = f2.type; }
+        
         try {
             await fetch(URL_PAGOS, { method: 'POST', mode: 'no-cors', body: JSON.stringify(datos) });
-            status.textContent = '✅ Pago reportado. Nuestro equipo le confirmará pronto.'; status.style.color = '#00e676';
-            f.reset(); if(cDir) { cDir.style.display='none'; cDir.querySelector('textarea').required=false; }
-            document.querySelectorAll('.file-name').forEach(function(el){ el.style.display='none'; }); btn.textContent = 'Enviado ✓';
+            status.textContent = '✅ Pago reportado. Recibirá un correo de confirmación.'; status.style.color = '#00e676';
+            f.reset(); 
+            if(cDir) { cDir.style.display='none'; cDir.querySelector('textarea').required=false; }
+            document.getElementById('campos-bolivares').style.display='none';
+            document.getElementById('campo-monto-usd').style.display='flex';
+            document.querySelectorAll('.file-name').forEach(function(el){ el.style.display='none'; }); 
+            btn.textContent = 'Enviado ✓';
         } catch(e) {
             status.textContent = 'Error de conexión. Intente por WhatsApp.'; status.style.color = '#ff5252';
             btn.disabled = false; btn.textContent = 'Reportar pago →';
