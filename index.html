@@ -774,7 +774,7 @@
         btn.disabled = true; btn.textContent = 'Enviando...';
         status.textContent = 'Procesando su solicitud...'; status.style.color = '#aaa';
         var f = ev.target;
-        var datos = { nombre:f.nombre.value, cedula:f.cedula.value, rif:f.rif.value, telefono:f.telefono.value, correo:f.correo.value, monto_solicitado:f.monto_solicitado.value, metodo_desembolso:f.metodo_desembolso.value, garantia:f.garantia.value, mensaje:f.mensaje.value };
+        var datos = { tipo:'solicitud', nombre:f.nombre.value, cedula:f.cedula.value, rif:f.rif.value, telefono:f.telefono.value, correo:f.correo.value, monto_solicitado:f.monto_solicitado.value, metodo_desembolso:f.metodo_desembolso.value, garantia:f.garantia.value, mensaje:f.mensaje.value };
         var fc = document.getElementById('file-cedula').files[0];
         var fr = document.getElementById('file-rif').files[0];
         if (fc) { datos.cedula_base64 = await archivoABase64(fc); datos.cedula_nombre = fc.name; datos.cedula_tipo = fc.type; }
